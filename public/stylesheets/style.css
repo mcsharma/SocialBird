@@ -1,0 +1,23 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.hidden {
+ display: none;
+}
+#page_info {
+  margin-top: 50px;
+}
+#content {
+  margin-top: 10px;
+}
+
+.composer {
+  height: 60px;
+  width: 300px;
+}

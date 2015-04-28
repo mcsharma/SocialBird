@@ -15,7 +15,7 @@ function onLoggedOut() {
 }
 
 var onLoginClick = function () {
-  FB.login(statusChangeCallback, {scope: 'manage_pages'});
+  FB.login(statusChangeCallback, {scope: 'manage_pages,publish_pages'});
 };
 
 function onLoggedIn() {
@@ -31,7 +31,7 @@ function onLoggedIn() {
 function onInitialDataFetched(response) {
   $('#welcome').text("Welcome " + response.name);
   React.render(
-    <PagesManager data={response.accounts.data}/>,
+    <PagesManager data={response.accounts.data} />,
     $('#pages')[0]
   );
 }
@@ -41,18 +41,35 @@ var PagesManager = React.createClass({
 
   getInitialState() {
     return {
-      pageID: 0,
+      pageID: this.props.default ? this.props.default : 0,
       hasPosts: false,
       posts: []
     }
   },
 
-  handleChange(event) {
+  handleSelectorChange(event) {
     this.setState({
       pageID: event.target.value,
       hasPosts: false,
       posts: []
     });
+  },
+
+  onPostCreated(post_id) {
+    FB.api(post_id + '?fields=message,created_time,link,type', function (post) {
+      var posts = this.state.posts.slice();
+      // prepend the new post in the existing list
+      posts.unshift(post);
+      this.setState({
+        pageID: this.state.pageID,
+        hasPosts: true,
+        posts: posts
+      });
+    }.bind(this));
+  },
+
+  componentDidMount() {
+    this.componentDidUpdate();
   },
 
   componentDidUpdate() {
@@ -79,13 +96,51 @@ var PagesManager = React.createClass({
     return (
       <div>
         <PageSelector
-          onChange={this.handleChange}
+          onChange={this.handleSelectorChange}
           data={this.props.data}
-          value={this.state.pageID}
-          />
-        <PageInfo data={page}/>
-        <PageStream posts={this.state.posts}/>
+          value={this.state.pageID}/>
+        {this.state.pageID !== 0 ?
+          <div>
+            <PageInfo data={page}/>
+            <PageComposer data={page} onPostCreated={this.onPostCreated}/>
+            <PageStream posts={this.state.posts}/>
+          </div> :
+          null
+        }
       </div>
+    );
+  }
+});
+
+var PageComposer = React.createClass({
+
+  onPostButtonClick() {
+    var textarea = this.refs.textarea.getDOMNode();
+    var message = textarea.value;
+    $(textarea).val('');
+    FB.api(
+      this.props.data.id + '/feed?message=' + message +
+        '&access_token=' + this.props.data.access_token,
+      'POST',
+      function (response) {
+        this.props.onPostCreated(response.id);
+      }.bind(this)
+    );
+  },
+
+  render() {
+    return (
+      <form>
+        <textarea
+          ref="textarea"
+          className="composer"
+          placeholder="Post something on your Page"/>
+        <input
+          onClick={this.onPostButtonClick}
+          type='button'
+          value='Post as Your Page'>
+        </input>
+      </form>
     );
   }
 });
@@ -103,10 +158,6 @@ var PageInfo = React.createClass({
         <a href={page.link}>{page.link}</a>
 
         <div><img src={page.picture.data.url} alt={page.id}></img></div>
-        <textarea
-          className="composer"
-          placeholder="Post something on your Page"
-          />
       </div>
     );
   }

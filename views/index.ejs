@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script type="text/javascript" src="../javascripts/jquery.js"></script>
-    <script type="text/javascript" src="../javascripts/facebook.js"></script>
-    <script type="text/jsx" src="../javascripts/home.js"></script>
-    <script src="../javascripts/react.js"></script>
-    <script src="../javascripts/JSXTransformer.js"></script>
+    <script src="../js/lib/jquery.js"></script>
+    <script src="../js/lib/react.js"></script>
+    <script src="../js/lib/JSXTransformer.js"></script>
+    <script src="../js/init.js"></script>
+    <script src="../js/Home.js"></script>
+    <script src="../js/Utils.js"></script>
+    <script type="text/jsx" src="../js/LoginUtils.js"></script>
+    <script type="text/jsx" src="../js/ui/PagesManager.js"></script>
+    <script type="text/jsx" src="../js/ui/PageSelector.js"></script>
+    <script type="text/jsx" src="../js/ui/PageInfo.js"></script>
+    <script type="text/jsx" src="../js/ui/PageComposer.js"></script>
+    <script type="text/jsx" src="../js/ui/PageStream.js"></script>
+    <script type="text/jsx" src="../js/ui/Post.js"></script>
 
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/home.css' />
   </head>
   <body>
-    <input id="login" class="hidden" type="button" value="Login with Facebook" onclick="onLoginClick();"></input>
+    <input id="login" class="hidden" type="button" value="Login with Facebook" onclick="LoginUtils.onLoginClick();">
+    </input>
     <div id="welcome"></div>
     <div id="pages"></div>
   </body>

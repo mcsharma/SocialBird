@@ -13,7 +13,6 @@ var LoginUtils = (function () {
   };
 
   this.onLoginClick = function () {
-    alert("yoo");
     FB.login(statusChangeCallback, {scope: 'manage_pages,publish_pages'});
   };
 

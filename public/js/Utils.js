@@ -6,5 +6,16 @@ var Utils = {
       }
     }
     return null;
+  },
+  getPictureOfHeight(photoNode, height) {
+    if (!photoNode.images) {
+      return null;
+    }
+    for (var i = 0; i < photoNode.images.length; i++) {
+      if (photoNode.images[i].height == height) {
+        return photoNode.images[i].source;
+      }
+    }
+    return null;
   }
 };

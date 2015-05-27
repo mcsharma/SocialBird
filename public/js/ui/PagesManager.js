@@ -66,7 +66,7 @@ var PagesManager = React.createClass({
         <div className="col-md-6">
           {this.state.pageID !== 0 ?
             <div>
-              <PageInfo data={page}/>
+              <PageInfo key={Math.random()} data={page}/>
               <PageComposer data={page} onPostCreated={this.onPostCreated}/>
               <PageStream posts={this.state.posts}/>
             </div> :

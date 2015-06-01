@@ -57,23 +57,25 @@ var PagesManager = React.createClass({
     var page = Utils.getPageDataForID(this.props.data, this.state.pageID);
     return (
       <div className="row">
-        <div className="col-md-3">
+        <div className="col-md-4">
           <PageSelector
           onChange={this.handleSelectorChange}
           data={this.props.data}
           value={this.state.pageID}/>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-4">
           {this.state.pageID !== 0 ?
             <div>
-              <PageInfo key={Math.random()} data={page}/>
-              <PageComposer data={page} onPostCreated={this.onPostCreated}/>
+              <PageInfo key={page.id} data={page}/>
+              <div className="margin-top-10">
+                <PageComposer data={page} onPostCreated={this.onPostCreated}/>
+              </div>
               <PageStream posts={this.state.posts}/>
             </div> :
             null
           }
         </div>
-        <div className="col-md-3">
+        <div className="col-md-4">
         </div>
       </div>
     );

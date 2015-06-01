@@ -1,9 +1,9 @@
 var PageComposer = React.createClass({
 
   onPostButtonClick() {
-    var textarea = this.refs.textarea.getDOMNode();
-    var message = textarea.value;
-    $(textarea).val('');
+    var composer = this.refs.composer.getDOMNode();
+    var message = composer.value;
+    $(composer).val('');
     FB.api(
       this.props.data.id + '/feed?message=' + message +
       '&access_token=' + this.props.data.access_token,
@@ -16,17 +16,24 @@ var PageComposer = React.createClass({
 
   render() {
     return (
-      <form>
-        <textarea
-          ref="textarea"
-          className="composer"
-          placeholder="Post something on your Page"/>
-        <input
-          onClick={this.onPostButtonClick}
-          type='button'
-          value='Post as Your Page'>
-        </input>
-      </form>
+      <div>
+        <div className="form-group">
+          <textarea
+            ref="composer"
+            rows="3"
+            className="form-control"
+            placeholder="Post something on your Page"
+          />
+        </div>
+        <div className="text-right form-group">
+          <input
+            onClick={this.onPostButtonClick}
+            type='button'
+            className="btn btn-primary"
+            value='Post'>
+          </input>
+        </div>
+      </div>
     );
   }
 });

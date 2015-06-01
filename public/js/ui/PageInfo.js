@@ -30,14 +30,21 @@ var PageInfo = React.createClass({
     var page = this.props.data;
     if (!page) return null;
     return (
-      <div>
-        <div><img src={this.state.coverPhoto}></img></div>
-        <div><img src={page.picture.data.url} alt={page.id}></img></div>
-        <div>
-          <a href={page.link}>{page.name}</a>
-          {page.likes} Total Likes
+      <div className="row">
+        <div className="col-md-3">
+          <img src={page.picture.data.url} alt={page.id} className="img-thumbnail"></img>
         </div>
-        <a href={page.link}>{page.link}</a>
+        <div className="col-md-9">
+          <div className="row">
+            <a href={page.link}>{page.link}</a>
+          </div>
+          <div className="row margin-top-10">
+            <a href={page.link}>{page.name}</a>
+            <span className="margin-left-10">
+              <strong>{page.likes}</strong> Likes
+            </span>
+          </div>
+        </div>
       </div>
     );
   }

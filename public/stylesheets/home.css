@@ -15,3 +15,15 @@
 .margin-top-10 {
   margin-top: 10px;
 }
+
+.margin-top-5 {
+  margin-top: 5px;
+}
+
+.post_permalink {
+  color: rgb(149, 153, 165);
+}
+.separator {
+  margin-top: 10px;
+  margin-bottom: 0px;
+}

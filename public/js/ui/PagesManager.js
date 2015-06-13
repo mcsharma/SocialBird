@@ -18,7 +18,7 @@ var PagesManager = React.createClass({
   },
 
   onPostCreated(post_id) {
-    FB.api(post_id + '?fields=message,created_time,link,type', function (post) {
+    FB.api(post_id + '?date_format=U&fields=message,created_time,link,type', function (post) {
       var posts = this.state.posts.slice();
       // prepend the new post in the existing list
       posts.unshift(post);
@@ -39,7 +39,7 @@ var PagesManager = React.createClass({
       return;
     }
     FB.api(
-      this.state.pageID + '/posts?fields=message,created_time,link,type',
+      this.state.pageID + '/posts?date_format=U&fields=message,created_time,link,type',
       function (response) {
         if (!this.isMounted()) {
           return;
@@ -70,7 +70,7 @@ var PagesManager = React.createClass({
               <div className="margin-top-10">
                 <PageComposer data={page} onPostCreated={this.onPostCreated}/>
               </div>
-              <PageStream posts={this.state.posts}/>
+              <PageStream page={page} posts={this.state.posts}/>
             </div> :
             null
           }

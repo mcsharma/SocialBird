@@ -3,8 +3,8 @@ var PageStream = React.createClass({
     return (
       <div>
         {this.props.posts.map(function (post) {
-          return <Post key={post.id} data={post}/>;
-        })}
+          return <Post from={this.props.page} key={post.id} data={post}/>;
+        }.bind(this))}
       </div>
     );
   }

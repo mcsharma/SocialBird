@@ -2,7 +2,7 @@ var ProfileLink = React.createClass({
   render() {
     var profile = this.props.of;
     return (
-      <a href={"https://facebook.com/"+profile.id} target="_blank">{profile.name}</a>
+      <a href={"https://www.facebook.com/"+profile.id} target="_blank">{profile.name}</a>
     );
   }
 });
@@ -11,7 +11,8 @@ var ProfilePhoto = React.createClass({
   render() {
     var page = this.props.of;
     return (
-      <img width="30" height="30" src={page.picture.data.url} alt={page.id} ></img>
+      <img width="40" height="40" className="img-rounded" src={page.picture.data.url} alt={page.id} >
+      </img>
     );
   }
 });

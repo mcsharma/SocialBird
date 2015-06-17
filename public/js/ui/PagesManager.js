@@ -1,6 +1,10 @@
 
 var PagesManager = React.createClass({
 
+  getPostFieldsToFetch() {
+    return 'message,created_time,link,type,full_picture,source';
+  },
+
   getInitialState() {
     return {
       pageID: this.props.default ? this.props.default : 0,
@@ -18,7 +22,7 @@ var PagesManager = React.createClass({
   },
 
   onPostCreated(post_id) {
-    FB.api(post_id + '?date_format=U&fields=message,created_time,link,type', function (post) {
+    FB.api(post_id + '?date_format=U&fields='+this.getPostFieldsToFetch(), function (post) {
       var posts = this.state.posts.slice();
       // prepend the new post in the existing list
       posts.unshift(post);
@@ -39,7 +43,7 @@ var PagesManager = React.createClass({
       return;
     }
     FB.api(
-      this.state.pageID + '/posts?date_format=U&fields=message,created_time,link,type',
+      this.state.pageID + '/posts?date_format=U&fields='+this.getPostFieldsToFetch(),
       function (response) {
         if (!this.isMounted()) {
           return;

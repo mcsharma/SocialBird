@@ -9,7 +9,8 @@ var PagesManager = React.createClass({
     return {
       pageID: this.props.default ? this.props.default : 0,
       hasPosts: false,
-      posts: []
+      posts: [],
+      pagingLinks: {},
     }
   },
 
@@ -17,7 +18,8 @@ var PagesManager = React.createClass({
     this.setState({
       pageID: event.target.value,
       hasPosts: false,
-      posts: []
+      posts: [],
+      pagingLinks: {}
     });
   },
 
@@ -29,7 +31,8 @@ var PagesManager = React.createClass({
       this.setState({
         pageID: this.state.pageID,
         hasPosts: true,
-        posts: posts
+        posts: posts,
+        pagingLinks: this.state.pagingLinks
       });
     }.bind(this));
   },
@@ -43,7 +46,7 @@ var PagesManager = React.createClass({
       return;
     }
     FB.api(
-      this.state.pageID + '/posts?date_format=U&fields='+this.getPostFieldsToFetch(),
+      this.state.pageID + '/posts?date_format=U&limit=2&fields='+this.getPostFieldsToFetch(),
       function (response) {
         if (!this.isMounted()) {
           return;
@@ -51,7 +54,8 @@ var PagesManager = React.createClass({
         this.setState({
           pageID: this.state.pageID,
           hasPosts: true,
-          posts: response.data
+          posts: response.data,
+          pagingLinks: response.paging
         });
       }.bind(this)
     );
@@ -74,7 +78,7 @@ var PagesManager = React.createClass({
               <div className="margin-top-10">
                 <PageComposer data={page} onPostCreated={this.onPostCreated}/>
               </div>
-              <PageStream page={page} posts={this.state.posts}/>
+              <PageStream page={page} posts={this.state.posts} pagingLinks={this.state.pagingLinks}/>
             </div> :
             null
           }

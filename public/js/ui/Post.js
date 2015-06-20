@@ -6,19 +6,29 @@ var Post = React.createClass({
     var content = null;
     switch (post.type) {
       case 'video':
-        content =
-          <video
-            id="example_video_1"
-            className="video-js vjs-default-skin"
-            controls preload="auto"
-            width="400" height="240"
-            poster={post.full_picture}>
-            <source src={post.source} type='video/mp4' />
-          </video>;
+        var source_uri = URI(post.source);
+        if (source_uri.host() === 'www.youtube.com') {
+          source_uri.setQuery("autoplay", 0); // don't auto-play!
+          content =
+            <iframe width="460" height="270"
+              src={source_uri.href()}
+              frameborder="0"
+              allowfullscreen="true">
+            </iframe>;
+        } else {
+          content =
+            <video
+              className="video-js vjs-default-skin"
+              controls preload="auto"
+              width="460" height="270"
+              poster={post.full_picture}>
+              <source src={post.source} type='video/mp4' />
+            </video>;
+        }
         break;
       case 'photo':
         content =
-          <img width="400" height="240" src={post.full_picture} />;
+          <img width="460" height="270" src={post.full_picture} />;
         break;
     }
     return (
@@ -34,8 +44,8 @@ var Post = React.createClass({
           </a>
         </div>
         <div>
-          <div>{post.message}</div>
-          {content}
+          <div style={{"margin-top":"8px"}}>{post.message}</div>
+          <div style={{"margin-top": post.message ? "8px" : "15px"}}>{content}</div>
         </div>
       </div>
     );

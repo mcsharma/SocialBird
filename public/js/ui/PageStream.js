@@ -1,11 +1,11 @@
 var PageStream = React.createClass({
-  getInitialState() {
+  getInitialState: function() {
     return {
       morePosts: [],
       pagingLinks: null
     };
   },
-  render() {
+  render: function() {
     var all_posts = this.props.posts.concat(this.state.morePosts);
     var paging_links = this.state.pagingLinks;
     if (!paging_links) {
@@ -33,7 +33,7 @@ var PageStream = React.createClass({
     );
   },
 
-  clickedSeeMore(event) {
+  clickedSeeMore: function(event) {
     var paging_links = this.state.pagingLinks;
     if (!paging_links) {
       // this is the first time user is clicking 'See more' link

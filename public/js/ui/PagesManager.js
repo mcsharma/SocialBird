@@ -1,11 +1,11 @@
 
 var PagesManager = React.createClass({
 
-  getPostFieldsToFetch() {
+  getPostFieldsToFetch: function() {
     return 'message,created_time,link,type,full_picture,source';
   },
 
-  getInitialState() {
+  getInitialState: function() {
     return {
       pageID: this.props.default ? this.props.default : 0,
       hasPosts: false,
@@ -14,7 +14,7 @@ var PagesManager = React.createClass({
     }
   },
 
-  handleSelectorChange(event) {
+  handleSelectorChange: function(event) {
     this.setState({
       pageID: event.target.value,
       hasPosts: false,
@@ -23,7 +23,7 @@ var PagesManager = React.createClass({
     });
   },
 
-  onPostCreated(post_id) {
+  onPostCreated: function(post_id) {
     FB.api(post_id + '?date_format=U&fields='+this.getPostFieldsToFetch(), function (post) {
       var posts = this.state.posts.slice();
       // prepend the new post in the existing list
@@ -37,11 +37,11 @@ var PagesManager = React.createClass({
     }.bind(this));
   },
 
-  componentDidMount() {
+  componentDidMount: function() {
     this.componentDidUpdate();
   },
 
-  componentDidUpdate() {
+  componentDidUpdate: function() {
     if (this.state.pageID == 0 || this.state.hasPosts) {
       return;
     }
@@ -61,7 +61,7 @@ var PagesManager = React.createClass({
     );
   },
 
-  render() {
+  render: function() {
     var page = Utils.getPageDataForID(this.props.data, this.state.pageID);
     return (
       <div className="row">

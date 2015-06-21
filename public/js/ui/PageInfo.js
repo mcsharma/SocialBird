@@ -1,16 +1,16 @@
 var PageInfo = React.createClass({
 
-  getInitialState() {
+  getInitialState: function() {
     return {
       coverPhoto: null
     };
   },
 
-  componentDidMount() {
+  componentDidMount: function() {
     this.componentDidUpdate();
   },
 
-  componentDidUpdate() {
+  componentDidUpdate: function() {
     if (!this.props.data.cover || this.state.coverPhoto) {
       return;
     }
@@ -26,7 +26,7 @@ var PageInfo = React.createClass({
       }.bind(this)
     );
   },
-  render() {
+  render: function() {
     var page = this.props.data;
     if (!page) return null;
     return (

@@ -1,6 +1,6 @@
 var PageComposer = React.createClass({
 
-  onPostButtonClick() {
+  onPostButtonClick: function() {
     var composer = this.refs.composer.getDOMNode();
     var message = composer.value;
     $(composer).val('');
@@ -14,7 +14,7 @@ var PageComposer = React.createClass({
     );
   },
 
-  render() {
+  render: function() {
     return (
       <div>
         <div className="form-group">

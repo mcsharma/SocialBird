@@ -1,5 +1,5 @@
 var PageSelector = React.createClass({
-  render() {
+  render: function() {
     var pages = this.props.data.slice();
     pages.unshift({id: 0, name: 'Select a Page'});
     return (

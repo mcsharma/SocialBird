@@ -1,5 +1,5 @@
 var Post = React.createClass({
-  render() {
+  render: function() {
     var post = this.props.data;
     ids = post.id.split('_');
     var permalink = 'https://www.facebook.com/' + ids[0] + '/posts/' + ids[1];

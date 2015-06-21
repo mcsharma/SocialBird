@@ -1,13 +1,15 @@
-var Utils = {
-  getPageDataForID: function(pages, page_id) {
+var Utils = (function () {
+
+  this.getPageDataForID = function(pages, page_id) {
     for (var i = 0; i < pages.length; i++) {
       if (pages[i].id == page_id.toString()) {
         return pages[i];
       }
     }
     return null;
-  },
-  getPictureOfHeight(photoNode, height) {
+  };
+
+  this.getPictureOfHeight = function(photoNode, height) {
     if (!photoNode.images) {
       return null;
     }
@@ -18,4 +20,7 @@ var Utils = {
     }
     return null;
   }
-};
+
+  return this;
+
+})();

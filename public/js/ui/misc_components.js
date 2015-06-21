@@ -1,5 +1,5 @@
 var ProfileLink = React.createClass({
-  render() {
+  render: function() {
     var profile = this.props.of;
     return (
       <a href={"https://www.facebook.com/"+profile.id} target="_blank">{profile.name}</a>
@@ -8,7 +8,7 @@ var ProfileLink = React.createClass({
 });
 
 var ProfilePhoto = React.createClass({
-  render() {
+  render: function() {
     var page = this.props.of;
     return (
       <img width="40" height="40" className="img-rounded" src={page.picture.data.url} alt={page.id} >
@@ -18,7 +18,7 @@ var ProfilePhoto = React.createClass({
 });
 
 var DateTime = React.createClass({
-  render() {
+  render: function() {
     var date = new Date(this.props.timestamp * 1000);
     var month_names = [
       "Jan", "Feb", "March", "April",

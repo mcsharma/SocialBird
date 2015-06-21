@@ -28,8 +28,11 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
   </head>
   <body>
-    <input id="login" class="hidden" type="button" value="Login with Facebook" onclick="LoginUtils.onLoginClick();">
-    </input>
+    <div id="login" style="text-align: center; margin-top: 100px; display: none">
+      <button class="btn btn-primary" onclick="LoginUtils.onLoginClick();">
+        Login with Facebook
+      </button>
+    </div>
     <div id="welcome"></div>
     <div id="pages"></div>
   </body>

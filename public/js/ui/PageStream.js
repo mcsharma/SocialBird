@@ -5,6 +5,11 @@ var PageStream = React.createClass({
       pagingLinks: null
     };
   },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState(this.getInitialState());
+  },
+
   render: function() {
     var all_posts = this.props.posts.concat(this.state.morePosts);
     var paging_links = this.state.pagingLinks;

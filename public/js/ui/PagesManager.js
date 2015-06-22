@@ -7,7 +7,7 @@ var PagesManager = React.createClass({
 
   getInitialState: function() {
     return {
-      pageID: this.props.default ? this.props.default : 0,
+      pageID: 0,
       hasPosts: false,
       posts: [],
       pagingLinks: {},

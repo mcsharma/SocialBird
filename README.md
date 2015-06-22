@@ -1,5 +1,5 @@
 # SocialBird
-A Facebook Page management app build on React and Graph APIs
+A Facebook Page management web app build on React, Express, and Graph APIs.
 
 To run the website on your machine:
 

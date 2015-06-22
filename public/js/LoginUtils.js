@@ -29,7 +29,7 @@ var LoginUtils = (function () {
   var onInitialDataFetched = function (response) {
     $('#welcome').text("Welcome " + response.name);
     React.render(
-      <PagesManager data={response.accounts.data} default={410770802398128}/>,
+      <PagesManager data={response.accounts.data} />,
       $('#pages')[0]
     );
   };

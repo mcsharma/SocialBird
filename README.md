@@ -9,4 +9,4 @@ To run the website on your machine:
   "git clone https://github.com/mcsharma1990/SocialBird.git MyRepo"
 3. Go inside the folder and run the server: 
   "cd MyRepo && DEBUG=MyRepo npm start"
-4. Open http://localhost:3000, you should see able to see the website running.
+4. Open http://localhost:3000, you should be able to see the website running.

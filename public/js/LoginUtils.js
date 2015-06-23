@@ -2,7 +2,7 @@ var LoginUtils = (function () {
 
   this.statusChangeCallback = function (response) {
     if (response.status === 'connected') {
-      onLoggedIn();
+      onLoggedIn(response);
     } else {
       onLoggedOut();
     }
@@ -13,23 +13,13 @@ var LoginUtils = (function () {
   };
 
   this.onLoginClick = function () {
-    FB.login(statusChangeCallback, {scope: 'manage_pages,publish_pages'});
+    FB.login(statusChangeCallback, {scope: 'manage_pages'});
   };
 
-  this.onLoggedIn = function () {
+  this.onLoggedIn = function (response) {
     $('#login').hide();
-    FB.api(
-      '/me?fields=name,accounts{' +
-      'name,cover,access_token,picture.type(small),likes,link' +
-      '}',
-      onInitialDataFetched
-    );
-  };
-
-  var onInitialDataFetched = function (response) {
-    $('#welcome').text("Welcome " + response.name);
     React.render(
-      <PagesManager data={response.accounts.data} />,
+      <PagesManager userID={response.authResponse.userID} />,
       $('#pages')[0]
     );
   };

@@ -1,6 +1,9 @@
 var Utils = (function () {
 
   this.getPageDataForID = function(pages, page_id) {
+    if (!page_id) {
+      return null;
+    }
     for (var i = 0; i < pages.length; i++) {
       if (pages[i].id == page_id.toString()) {
         return pages[i];

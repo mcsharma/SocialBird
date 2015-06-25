@@ -2,15 +2,17 @@ var PageStream = React.createClass({
   getInitialState: function() {
     return {
       morePosts: [],
-      pagingLinks: null
     };
   },
 
   componentWillReceiveProps: function(nextProps) {
-    this.setState(this.getInitialState());
+    this.replaceState(this.getInitialState());
   },
 
   render: function() {
+    if (typeof(this.props.posts) === 'undefined') {
+      return <div />;
+    }
     var all_posts = this.props.posts.concat(this.state.morePosts);
     var paging_links = this.state.pagingLinks;
     if (!paging_links) {
@@ -55,7 +57,6 @@ var PageStream = React.createClass({
         pagingLinks: response.paging ? response.paging : {}
       });
     }.bind(this));
-
-    return false;
+    event.preventDefault();
   },
 });

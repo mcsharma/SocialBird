@@ -6,37 +6,27 @@ var PagesManager = React.createClass({
   },
 
   getInitialState: function() {
-    return {
-      perms: {'status': 'unknown', granted: {}},
-      pages: [],
-      pageID: 0,
-      hasPosts: false,
-      posts: [],
-      pagingLinks: {},
-    };
+    return {};
   },
 
   handleSelectorChange: function(event) {
     this.setState({
       pageID: event.target.value,
-      pages: this.state.pages,
-      perms: this.state.perms,
-      hasPosts: false,
-      posts: [],
-      pagingLinks: {},
+      posts: undefined,
+      pagingLinks: undefined
     });
   },
 
   onPostCreated: function(post_id) {
     FB.api(post_id + '?date_format=U&fields='+this.getPostFieldsToFetch(), function (post) {
-      var posts = this.state.posts.slice();
+      var posts = [];
+      if (this.state.posts) {
+        posts = this.state.posts.slice();
+      }
       // prepend the new post in the existing list
       posts.unshift(post);
       this.setState({
-        pageID: this.state.pageID,
-        hasPosts: true,
         posts: posts,
-        pagingLinks: this.state.pagingLinks
       });
     }.bind(this));
   },
@@ -65,76 +55,107 @@ var PagesManager = React.createClass({
   },
 
   componentDidUpdate: function() {
-    if (this.state.perms.status === 'unknown') {
+    if (!this.state.status) {
+      FB.getLoginStatus(this.statusChangeCallBack);
+      return;
+    }
+
+    if (this.state.status !== 'connected') {
+      return;
+    }
+
+    if (typeof (this.state.manage_pages) === 'undefined') {
       FB.api('/me/permissions', function (response) {
         this.setState({
-          perms: {status: 'known', granted: this.parsePermissions(response)}
+          status: 'connected',
+          manage_pages: this.parsePermissions(response).manage_pages || false
         });
       }.bind(this));
       return;
     }
-    if (!this.state.perms.granted.manage_pages) {
+    if (this.state.manage_pages === false) {
       return;
     }
-    if (!this.state.pages.length) {
-    FB.api(
-      '/me?fields=accounts{' +
-      'name,cover,access_token,picture.type(small),likes,link' +
-      '}',
-      function (response) {
-        this.setState({
-          pageID: 0,
-          pages: response.accounts.data,
-          perms: this.state.perms,
-          hasPosts: false,
-          posts: [],
-          pagingLinks: {},
-        });
-      }.bind(this)
-    );
+    if (typeof (this.state.pages) === 'undefined') {
+      FB.api(
+        '/me?fields=accounts{' +
+        'name,cover,access_token,picture.type(small),likes,link' +
+        '}',
+        function (response) {
+          this.setState({
+            pages: response.accounts.data,
+            pageID: response.accounts.data.length > 0 ? response.accounts.data[0].id : 0
+          });
+        }.bind(this)
+      );
     }
 
-    if (this.state.pageID === 0 || this.state.hasPosts) {
+    if (!this.state.pageID) {
       return;
     }
-    FB.api(
-      this.state.pageID + '/posts?date_format=U&limit=2&fields='+this.getPostFieldsToFetch(),
-      function (response) {
-        if (!this.isMounted()) {
-          return;
-        }
-        this.setState({
-          pageID: this.state.pageID,
-          pages: this.state.pages,
-          perms: this.state.perms,
-          hasPosts: true,
-          posts: response.data,
-          pagingLinks: response.paging
-        });
-      }.bind(this)
+    if (typeof (this.state.posts) === 'undefined') {
+      FB.api(
+        this.state.pageID + '/posts?date_format=U&limit=2&fields='+this.getPostFieldsToFetch(),
+        function (response) {
+          if (!this.isMounted()) {
+            return;
+          }
+          this.setState({
+            posts: response.data,
+            pagingLinks: response.paging
+          });
+        }.bind(this)
+      );
+    }
+  },
+
+  statusChangeCallBack: function (response) {
+    this.replaceState({
+      status: response.status
+    });
+  },
+
+  facebookLogin: function () {
+    FB.login(this.statusChangeCallBack, {scope: 'manage_pages'});
+  },
+
+  spinner: function () {
+    return (
+      <div className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
     );
   },
-  requestManagePages: function () {
-    FB.login(LoginUtils.statusChangeCallback, {scope: 'manage_pages'});
-  },
+
   render: function() {
-    if (this.state.perms.status === 'unknown') {
+    if (!this.state.status) {
+      return this.spinner();
+    }
+    if (this.state.status !== 'connected') {
       return (
-        <div>Fetching status..</div>
+        <div>
+          <button className="btn btn-primary" onClick={this.facebookLogin}>
+            Login with Facebook
+          </button>
+        </div>
       );
     }
-    if (!this.state.perms.granted.manage_pages) {
+    if (typeof (this.state.manage_pages) === 'undefined') {
+      return this.spinner();
+    }
+
+    if (this.state.manage_pages === false) {
       return (
-      <button className="btn btn-primary" onClick={this.requestManagePages}>
-       Grant Manage Pages
-      </button>
+        <div>
+          <button className="btn btn-primary" onClick={this.facebookLogin}>
+            Grant Manage Pages
+          </button>
+        </div>
       );
     }
-    if (!this.state.pages.length) {
-      return (
-        <div>Fetching Pages...</div>
-      );
+
+    if (typeof (this.state.pages) === 'undefined') {
+      return this.spinner();
     }
+
     var page = Utils.getPageDataForID(this.state.pages, this.state.pageID);
     return (
       <div className="row">
@@ -145,7 +166,7 @@ var PagesManager = React.createClass({
           value={this.state.pageID}/>
         </div>
         <div className="col-md-4">
-          {this.state.pageID !== 0 ?
+          {page ?
             <div>
               <PageInfo key={page.id} data={page}/>
               <div className="margin-top-10">
@@ -156,8 +177,7 @@ var PagesManager = React.createClass({
             null
           }
         </div>
-        <div className="col-md-4">
-        </div>
+        <div className="col-md-4" />
       </div>
     );
   }

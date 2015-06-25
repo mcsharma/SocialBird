@@ -8,9 +8,8 @@
     <script src="../js/lib/URI.js"></script>
 
     <script src="../js/init.js"></script>
-    <script src="../js/Home.js"></script>
+    <script type="text/jsx" src="../js/Home.js"></script>
     <script src="../js/Utils.js"></script>
-    <script type="text/jsx" src="../js/LoginUtils.js"></script>
     <script type="text/jsx" src="../js/ui/PagesManager.js"></script>
     <script type="text/jsx" src="../js/ui/PageSelector.js"></script>
     <script type="text/jsx" src="../js/ui/PageInfo.js"></script>
@@ -28,13 +27,6 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
   </head>
   <body>
-    <div id="gateway">
-          <div id="login" style="text-align: center; margin-top: 100px; display: none">
-            <button class="btn btn-primary" onclick="LoginUtils.onLoginClick();">
-              Login with Facebook
-            </button>
-          </div>
-</div>
-    <div id="pages" />
+    <div id="pages_manager" />
   </body>
 </html>

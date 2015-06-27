@@ -11,7 +11,7 @@ var PageStream = React.createClass({
 
   render: function() {
     if (typeof(this.props.posts) === 'undefined') {
-      return <div />;
+      return PagesManager.spinner();
     }
     var all_posts = this.props.posts.concat(this.state.morePosts);
     var paging_links = this.state.pagingLinks;

@@ -49,6 +49,12 @@ var PagesManager = React.createClass({
         }
       }
       return ret;
+    },
+
+    spinner: function () {
+      return (
+        <div className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
+      );
     }
   },
 
@@ -123,15 +129,9 @@ var PagesManager = React.createClass({
     FB.login(this.statusChangeCallBack, {scope: 'manage_pages'});
   },
 
-  spinner: function () {
-    return (
-      <div className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
-    );
-  },
-
   render: function() {
     if (!this.state.status) {
-      return this.spinner();
+      return PagesManager.spinner();
     }
     if (this.state.status !== 'connected') {
       return (
@@ -143,7 +143,7 @@ var PagesManager = React.createClass({
       );
     }
     if (typeof (this.state.manage_pages) === 'undefined') {
-      return this.spinner();
+      return PagesManager.spinner();
     }
 
     if (this.state.manage_pages === false) {
@@ -157,7 +157,7 @@ var PagesManager = React.createClass({
     }
 
     if (typeof (this.state.pages) === 'undefined') {
-      return this.spinner();
+      return PagesManager.spinner();
     }
 
     var page = Utils.getPageDataForID(this.state.pages, this.state.pageID);

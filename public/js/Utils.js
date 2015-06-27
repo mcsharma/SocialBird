@@ -22,6 +22,16 @@ var Utils = (function () {
       }
     }
     return null;
+  };
+
+  this.find = function(arr, value) {
+    if (!arr) return -1;
+    for(var i = 0; i < arr.length; i++) {
+      if (arr[i] == value) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   return this;

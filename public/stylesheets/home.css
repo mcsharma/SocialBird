@@ -20,9 +20,10 @@
   margin-top: 5px;
 }
 
-.post_permalink {
-  color: rgb(149, 153, 165);
+.gray_text {
+   color: rgb(149, 153, 165);
 }
+
 .separator {
   margin-top: 10px;
   margin-bottom: 0px;

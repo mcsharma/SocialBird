@@ -33,13 +33,12 @@ var Post = React.createClass({
     }
     return (
       <div>
-        <hr className="separator"/>
         <div style={{"float": "left", "margin-top":"10px"}}>
           <ProfilePhoto of={this.props.from} />
         </div>
         <div style={{"margin-top":"7px", "margin-left":"50px"}}>
           <ProfileLink  of={this.props.from} />
-          <a href={permalink} target="_blank" className="post_permalink">
+          <a href={permalink} target="_blank" className="gray_text">
             <DateTime timestamp={post.created_time} />
           </a>
         </div>
@@ -47,6 +46,7 @@ var Post = React.createClass({
           <div style={{"margin-top":"8px"}}>{post.message}</div>
           <div style={{"margin-top": post.message ? "8px" : "15px"}}>{content}</div>
         </div>
+        <hr className="separator"/>
       </div>
     );
   }

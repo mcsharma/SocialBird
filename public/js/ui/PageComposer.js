@@ -31,6 +31,14 @@ var PageComposer = React.createClass({
   },
 
   render: function() {
+    if (Utils.find(this.props.data.perms, 'CREATE_CONTENT') == -1) {
+      return (
+        <div className="alert alert-warning" role="alert">
+          You do not have publishing permission on this Page.
+          Please ask one of the Admins of this Page to add you as an Editor.
+        </div>
+      );
+    }
     if (!this.props.publishPages && !this.state.publishPages) {
       return (
         <div className="alert alert-warning" role="alert">

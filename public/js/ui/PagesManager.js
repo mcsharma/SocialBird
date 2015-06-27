@@ -83,7 +83,7 @@ var PagesManager = React.createClass({
     if (typeof (this.state.pages) === 'undefined') {
       FB.api(
         '/me?fields=accounts{' +
-        'name,cover,access_token,picture.type(small),likes,link' +
+        'name,cover,access_token,picture.type(small),likes,link,perms' +
         '}',
         function (response) {
           this.setState({
@@ -176,6 +176,7 @@ var PagesManager = React.createClass({
               <div className="margin-top-10">
                 <PageComposer data={page} publishPages={this.state.publish_pages} onPostCreated={this.onPostCreated}/>
               </div>
+              <hr className="separator"/>
               <PageStream page={page} posts={this.state.posts} pagingLinks={this.state.pagingLinks}/>
             </div> :
             null

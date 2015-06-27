@@ -21,10 +21,11 @@ var PageStream = React.createClass({
     var show_more_link = paging_links && paging_links.next;
     return (
       <div>
+        {!all_posts.length ? <h2 className="gray_text text-center">No Posts to show</h2> : null}
         {all_posts.map(function (post) {
-          return <Post from={this.props.page} key={post.id} data={post}/>;
+          return <Post from={this.props.page} key={post.id} data={post} />;
         }.bind(this))}
-        <div style={{"height": "100px", "margin-top": "15px"}}>
+        <div style={{"height": "100px"}}>
           {show_more_link
             ? <a style={{"display":"block"}} href="#" onClick={this.clickedSeeMore}>
                 <div

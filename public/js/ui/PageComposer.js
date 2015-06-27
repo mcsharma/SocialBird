@@ -25,7 +25,7 @@ var PageComposer = React.createClass({
       '&access_token=' + this.props.data.access_token,
       'POST',
       function (response) {
-        this.props.onPostCreated(response.id);
+        this.props.onPostCreated();
       }.bind(this)
     );
   },

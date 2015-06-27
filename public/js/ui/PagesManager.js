@@ -1,10 +1,6 @@
 
 var PagesManager = React.createClass({
 
-  getPostFieldsToFetch: function() {
-    return 'message,created_time,link,type,full_picture,source';
-  },
-
   getInitialState: function() {
     return {};
   },
@@ -12,23 +8,11 @@ var PagesManager = React.createClass({
   handleSelectorChange: function(event) {
     this.setState({
       pageID: $(event.target).closest('li').data('value'),
-      posts: undefined,
-      pagingLinks: undefined
     });
   },
 
-  onPostCreated: function(post_id) {
-    FB.api(post_id + '?date_format=U&fields='+this.getPostFieldsToFetch(), function (post) {
-      var posts = [];
-      if (this.state.posts) {
-        posts = this.state.posts.slice();
-      }
-      // prepend the new post in the existing list
-      posts.unshift(post);
-      this.setState({
-        posts: posts,
-      });
-    }.bind(this));
+  onPostCreated: function() {
+    this.forceUpdate();
   },
 
   componentDidMount: function() {
@@ -99,24 +83,6 @@ var PagesManager = React.createClass({
         }.bind(this)
       );
     }
-
-    if (!this.state.pageID) {
-      return;
-    }
-    if (typeof (this.state.posts) === 'undefined') {
-      FB.api(
-        this.state.pageID + '/posts?date_format=U&limit=10&fields='+this.getPostFieldsToFetch(),
-        function (response) {
-          if (!this.isMounted()) {
-            return;
-          }
-          this.setState({
-            posts: response.data,
-            pagingLinks: response.paging
-          });
-        }.bind(this)
-      );
-    }
   },
 
   statusChangeCallBack: function (response) {
@@ -177,7 +143,7 @@ var PagesManager = React.createClass({
                 <PageComposer data={page} publishPages={this.state.publish_pages} onPostCreated={this.onPostCreated}/>
               </div>
               <hr className="separator"/>
-              <PageStream page={page} posts={this.state.posts} pagingLinks={this.state.pagingLinks}/>
+              <PageStream page={page} />
             </div> :
             null
           }

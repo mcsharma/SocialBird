@@ -35,19 +35,21 @@ var PagesManager = React.createClass({
     this.componentDidUpdate();
   },
 
-  parsePermissions: function (response) {
-    var ret = {};
-    for (var i = 0; i < response.data.length; i++) {
-      if (response.data[i].permission === 'manage_pages' &&
-          response.data[i].status === 'granted') {
-        ret.manage_pages = true;
+  statics: {
+    parsePermissions: function (response) {
+      var ret = {};
+      for (var i = 0; i < response.data.length; i++) {
+        if (response.data[i].permission === 'manage_pages' &&
+            response.data[i].status === 'granted') {
+          ret.manage_pages = true;
+        }
+        if (response.data[i].permission === 'publish_pages' &&
+            response.data[i].status === 'granted') {
+          ret.publish_pages = true;
+        }
       }
-      if (response.data[i].permission === 'manage_pages' &&
-          response.data[i].status === 'granted') {
-        ret.publish_pages = true;
-      }
+      return ret;
     }
-    return ret;
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -66,9 +68,11 @@ var PagesManager = React.createClass({
 
     if (typeof (this.state.manage_pages) === 'undefined') {
       FB.api('/me/permissions', function (response) {
+        var perms = PagesManager.parsePermissions(response);
         this.setState({
           status: 'connected',
-          manage_pages: this.parsePermissions(response).manage_pages || false
+          manage_pages: perms.manage_pages || false,
+          publish_pages: perms.publish_pages || false
         });
       }.bind(this));
       return;
@@ -95,7 +99,7 @@ var PagesManager = React.createClass({
     }
     if (typeof (this.state.posts) === 'undefined') {
       FB.api(
-        this.state.pageID + '/posts?date_format=U&limit=2&fields='+this.getPostFieldsToFetch(),
+        this.state.pageID + '/posts?date_format=U&limit=10&fields='+this.getPostFieldsToFetch(),
         function (response) {
           if (!this.isMounted()) {
             return;
@@ -170,7 +174,7 @@ var PagesManager = React.createClass({
             <div>
               <PageInfo key={page.id} data={page}/>
               <div className="margin-top-10">
-                <PageComposer data={page} onPostCreated={this.onPostCreated}/>
+                <PageComposer data={page} publishPages={this.state.publish_pages} onPostCreated={this.onPostCreated}/>
               </div>
               <PageStream page={page} posts={this.state.posts} pagingLinks={this.state.pagingLinks}/>
             </div> :

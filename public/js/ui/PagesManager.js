@@ -11,7 +11,7 @@ var PagesManager = React.createClass({
 
   handleSelectorChange: function(event) {
     this.setState({
-      pageID: event.target.value,
+      pageID: $(event.target).closest('li').data('value'),
       posts: undefined,
       pagingLinks: undefined
     });

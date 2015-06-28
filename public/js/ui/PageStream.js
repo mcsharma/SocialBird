@@ -58,7 +58,11 @@ var PageStream = React.createClass({
 
   render: function() {
     if (typeof(this.state.posts) === 'undefined') {
-      return Utils.spinner();
+      return (
+        <div className="text-center">
+          {Utils.spinner()}
+        </div>
+      );
     }
     var show_more_link = this.state.pagingLinks && this.state.pagingLinks.next;
     return (

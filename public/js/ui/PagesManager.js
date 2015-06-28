@@ -73,12 +73,17 @@ var PagesManager = React.createClass({
   },
 
   render: function() {
+    var container_style = {"margin-top": "100px", "text-align":"center"};
     if (!this.state.status) {
-      return Utils.spinner();
+      return (
+        <div style={container_style}>
+          {Utils.spinner()}
+        </div>
+      );
     }
     if (this.state.status !== 'connected') {
       return (
-        <div>
+        <div style={container_style}>
           <button className="btn btn-primary" onClick={this.facebookLogin}>
             Login with Facebook
           </button>
@@ -86,12 +91,15 @@ var PagesManager = React.createClass({
       );
     }
     if (typeof (this.state.managePages) === 'undefined') {
-      return Utils.spinner();
+      return (
+        <div style={container_style}>
+          {Utils.spinner()}
+        </div>
+      );
     }
-
     if (this.state.managePages === false) {
       return (
-        <div>
+        <div style={container_style}>
           <button className="btn btn-primary" onClick={this.facebookLogin}>
             Grant Manage Pages
           </button>
@@ -100,7 +108,11 @@ var PagesManager = React.createClass({
     }
 
     if (typeof (this.state.pages) === 'undefined') {
-      return Utils.spinner();
+      return (
+        <div style={container_style}>
+          {Utils.spinner()}
+        </div>
+      );
     }
 
     var page = Utils.getPageDataForID(this.state.pages, this.state.pageID);

@@ -33,18 +33,18 @@ var PagesManager = React.createClass({
       return;
     }
 
-    if (typeof (this.state.manage_pages) === 'undefined') {
+    if (typeof (this.state.managePages) === 'undefined') {
       FB.api('/me/permissions', function (response) {
         var perms = Utils.parsePermissions(response);
         this.setState({
           status: 'connected',
-          manage_pages: perms.manage_pages || false,
-          publish_pages: perms.publish_pages || false
+          managePages: perms.manage_pages || false,
+          publishPages: perms.publish_pages || false
         });
       }.bind(this));
       return;
     }
-    if (this.state.manage_pages === false) {
+    if (this.state.managePages === false) {
       return;
     }
     if (typeof (this.state.pages) === 'undefined') {
@@ -85,11 +85,11 @@ var PagesManager = React.createClass({
         </div>
       );
     }
-    if (typeof (this.state.manage_pages) === 'undefined') {
+    if (typeof (this.state.managePages) === 'undefined') {
       return Utils.spinner();
     }
 
-    if (this.state.manage_pages === false) {
+    if (this.state.managePages === false) {
       return (
         <div>
           <button className="btn btn-primary" onClick={this.facebookLogin}>
@@ -117,7 +117,11 @@ var PagesManager = React.createClass({
             <div>
               <PageInfo key={page.id} data={page}/>
               <div className="margin-top-10">
-                <PageComposer data={page} publishPages={this.state.publish_pages} onPostCreated={this.onPostCreated}/>
+                <PageComposer
+                  data={page}
+                  publishPages={this.state.publishPages}
+                  onPostCreated={this.onPostCreated}
+                />
               </div>
               <hr className="separator"/>
               <PageStream page={page} />

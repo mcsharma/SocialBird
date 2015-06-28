@@ -5,9 +5,9 @@ var PagesManager = React.createClass({
     return {};
   },
 
-  handleSelectorChange: function(event) {
+  onPageChange: function(page_id) {
     this.setState({
-      pageID: $(event.target).closest('li').data('value'),
+      pageID: page_id,
     });
   },
 
@@ -120,9 +120,10 @@ var PagesManager = React.createClass({
       <div className="row">
         <div className="col-md-4">
           <PageSelector
-          onChange={this.handleSelectorChange}
-          data={this.state.pages}
-          value={this.state.pageID}/>
+            onPageChange={this.onPageChange}
+            data={this.state.pages}
+            value={this.state.pageID}
+          />
         </div>
         <div className="col-md-4">
           {page ?

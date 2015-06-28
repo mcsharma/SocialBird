@@ -10,9 +10,10 @@ var PageStream = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.page.id == this.props.page.id) {
-      return;
+      this.setState({needRefresh: true});
+    } else {
+      this.replaceState(this.getInitialState());
     }
-    this.replaceState(this.getInitialState());
   },
 
   componentDidMount: function () {
@@ -20,21 +21,39 @@ var PageStream = React.createClass({
   },
 
   componentDidUpdate: function() {
-    if (typeof (this.state.posts) === 'undefined') {
-      FB.api(
-        this.props.page.id + '/posts?date_format=U&limit=2&fields='+this.getPostFieldsToFetch(),
-        function (response) {
-          if (!this.isMounted()) {
-            return;
-          }
-          this.setState({
-            posts: response.data,
-            pagingLinks: response.paging
-          });
-        }.bind(this)
-      );
+    if (typeof (this.state.posts) !== 'undefined' & !this.state.needRefresh) {
       return;
     }
+    var since = 0;
+    if (this.state.posts) {
+      since = this.state.posts[0].created_time;
+    }
+    FB.api(
+      this.props.page.id +
+        '/posts?date_format=U&since=' + since +
+        '&limit=10&fields=' + this.getPostFieldsToFetch(),
+      function (response) {
+        if (!this.isMounted()) {
+          return;
+        }
+        // If this is the first time we are fetching posts, then just
+        // set everything from response, otherwise just prepend the newly
+        // fetched posts into the existing posts.
+        if (typeof (this.state.posts) === 'undefined') {
+          this.setState({
+            posts: response.data,
+            pagingLinks: response.paging,
+            needRefresh: false,
+          });
+        } else {
+          this.setState({
+            posts: response.data.concat(this.state.posts),
+            needRefresh: false
+          });
+        }
+      }.bind(this)
+    );
+    return;
   },
 
   render: function() {
@@ -52,7 +71,7 @@ var PageStream = React.createClass({
           {show_more_link
             ? <a style={{"display":"block"}} href="#" onClick={this.clickedSeeMore}>
                 <div
-                  style={{ "padding":"5px"}}
+                  style={{"padding":"5px"}}
                   className="bg-info text-center">
                   See More
                 </div>

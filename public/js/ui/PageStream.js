@@ -80,7 +80,10 @@ var PageStream = React.createClass({
                   See More
                 </div>
               </a>
-            : null
+            : (this.state.showEnd
+               ? <h4 className="gray_text text-center">Now more posts to show</h4>
+               : null
+              )
           }
         </div>
       </div>
@@ -93,9 +96,11 @@ var PageStream = React.createClass({
     }
     FB.api(this.state.pagingLinks.next, function(response) {
       var posts = this.state.posts.concat(response.data);
+      var dead_end = !response.paging || !response.paging.next;
       this.setState({
         posts: posts,
-        pagingLinks: response.paging
+        pagingLinks: response.paging,
+        showEnd: dead_end,
       });
     }.bind(this));
     event.preventDefault();

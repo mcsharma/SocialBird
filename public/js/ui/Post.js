@@ -33,7 +33,7 @@ var Post = React.createClass({
     }
     return (
       <div>
-        <div style={{"float": "left", "margin-top":"10px"}}>
+        <div style={{"float": "left", "margin-top":"2px"}}>
           <ProfilePhoto of={this.props.from} />
         </div>
         <div style={{"margin-top":"7px", "margin-left":"50px"}}>

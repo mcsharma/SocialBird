@@ -6,8 +6,16 @@ var PageSelector = React.createClass({
   },
 
   render: function() {
+    var style = {
+      width: "200px",
+      height: $(window).height(),
+      position: "fixed",
+      overflow: "auto",
+    };
     return (
-      <div className="list-group" style={{"width":"200px"}}>
+      <div
+        className="list-group page_selector"
+        style={style}>
         {this.props.data.map(function(page) {
           var classes = "list-group-item";
           if (page.id == this.props.value) {

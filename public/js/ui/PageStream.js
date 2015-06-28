@@ -58,7 +58,7 @@ var PageStream = React.createClass({
 
   render: function() {
     if (typeof(this.state.posts) === 'undefined') {
-      return PagesManager.spinner();
+      return Utils.spinner();
     }
     var show_more_link = this.state.pagingLinks && this.state.pagingLinks.next;
     return (

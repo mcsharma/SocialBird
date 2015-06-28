@@ -11,7 +11,7 @@ var PageComposer = React.createClass({
   statusChangeCallback: function(response) {
     FB.api('/me/permissions', function (response) {
       this.setState({
-        publishPages: PagesManager.parsePermissions(response).publish_pages
+        publishPages: Utils.parsePermissions(response).publish_pages
       });
     }.bind(this));
   },

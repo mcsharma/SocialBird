@@ -32,7 +32,23 @@ var Utils = (function () {
       }
     }
     return -1;
-  }
+  };
+
+  this.parsePermissions = function (response) {
+    var ret = {};
+    for (var i = 0; i < response.data.length; i++) {
+      if (response.data[i].status === 'granted') {
+        ret[response.data[i].permission] = true;
+      }
+    }
+    return ret;
+  };
+
+  this.spinner = function () {
+    return (
+      <div className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
+    );
+  };
 
   return this;
 

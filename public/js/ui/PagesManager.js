@@ -19,29 +19,6 @@ var PagesManager = React.createClass({
     this.componentDidUpdate();
   },
 
-  statics: {
-    parsePermissions: function (response) {
-      var ret = {};
-      for (var i = 0; i < response.data.length; i++) {
-        if (response.data[i].permission === 'manage_pages' &&
-            response.data[i].status === 'granted') {
-          ret.manage_pages = true;
-        }
-        if (response.data[i].permission === 'publish_pages' &&
-            response.data[i].status === 'granted') {
-          ret.publish_pages = true;
-        }
-      }
-      return ret;
-    },
-
-    spinner: function () {
-      return (
-        <div className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
-      );
-    }
-  },
-
   componentWillReceiveProps: function(nextProps) {
     this.setState(this.getInitialState());
   },
@@ -58,7 +35,7 @@ var PagesManager = React.createClass({
 
     if (typeof (this.state.manage_pages) === 'undefined') {
       FB.api('/me/permissions', function (response) {
-        var perms = PagesManager.parsePermissions(response);
+        var perms = Utils.parsePermissions(response);
         this.setState({
           status: 'connected',
           manage_pages: perms.manage_pages || false,
@@ -97,7 +74,7 @@ var PagesManager = React.createClass({
 
   render: function() {
     if (!this.state.status) {
-      return PagesManager.spinner();
+      return Utils.spinner();
     }
     if (this.state.status !== 'connected') {
       return (
@@ -109,7 +86,7 @@ var PagesManager = React.createClass({
       );
     }
     if (typeof (this.state.manage_pages) === 'undefined') {
-      return PagesManager.spinner();
+      return Utils.spinner();
     }
 
     if (this.state.manage_pages === false) {
@@ -123,7 +100,7 @@ var PagesManager = React.createClass({
     }
 
     if (typeof (this.state.pages) === 'undefined') {
-      return PagesManager.spinner();
+      return Utils.spinner();
     }
 
     var page = Utils.getPageDataForID(this.state.pages, this.state.pageID);

@@ -1,6 +1,7 @@
 var PageStream = React.createClass({
   getInitialState: function() {
     return {
+      requiredCount: 10,
     };
   },
 
@@ -21,88 +22,108 @@ var PageStream = React.createClass({
   },
 
   componentDidUpdate: function() {
-    if (typeof (this.state.posts) !== 'undefined' & !this.state.needRefresh) {
-      return;
-    }
-    var since = 0;
-    if (this.state.posts) {
-      since = this.state.posts[0].created_time;
-    }
-    FB.api(
-      this.props.page.id +
-        '/posts?date_format=U&since=' + since +
-        '&limit=10&fields=' + this.getPostFieldsToFetch(),
-      function (response) {
-        if (!this.isMounted()) {
-          return;
-        }
-        // If this is the first time we are fetching posts, then just
-        // set everything from response, otherwise just prepend the newly
-        // fetched posts into the existing posts.
-        if (typeof (this.state.posts) === 'undefined') {
+    if (typeof (this.state.posts) === 'undefined') {
+      FB.api(
+        this.props.page.id + '/posts?date_format=U' +
+          '&limit=10&fields=' + this.getPostFieldsToFetch(),
+        function (response) {
           this.setState({
             posts: response.data,
-            pagingLinks: response.paging,
-            needRefresh: false,
+            next: response.paging ? response.paging.next : null,
           });
-        } else {
+        }.bind(this)
+      );
+      return;
+    }
+
+    if (this.state.needRefresh) {
+      var since = this.state.posts.length
+        ? this.state.posts[0].created_time
+        : 0;
+      FB.api(
+        this.props.page.id + '/posts?date_format=U&since=' + since +
+          '&limit=50&fields=' + this.getPostFieldsToFetch(),
+        function (response) {
           this.setState({
             posts: response.data.concat(this.state.posts),
+            // TODO: Might want to improve this count
+            requiredCount: this.state.requiredCount + response.data.length,
             needRefresh: false
           });
-        }
-      }.bind(this)
-    );
-    return;
+        }.bind(this)
+      );
+      return;
+    }
+
+    // We want to fetch at least 10 posts in advance
+    if (this.state.next && this.state.posts.length < this.state.requiredCount + 10) {
+      // TODO: Make sure we make the count equal
+      FB.api(this.state.next, function(response) {
+        var posts = this.state.posts.concat(response.data);
+        this.setState({
+          posts: posts,
+          next: response.paging ? response.paging.next : null,
+        });
+      }.bind(this));
+    }
   },
 
   render: function() {
-    if (typeof(this.state.posts) === 'undefined') {
-      return (
-        <div className="text-center">
-          {Utils.spinner()}
-        </div>
-      );
-    }
-    var show_more_link = this.state.pagingLinks && this.state.pagingLinks.next;
+    var posts_section = null;
+     if (typeof (this.state.posts) === 'undefined') {
+       return (
+         <div className="text-center">
+           {Utils.spinner()}
+         </div>
+       );
+     }
+     // This page is totally empty.
+     if (this.state.posts.length === 0) {
+       return (
+         <h2 className="gray_text text-center">
+           No Posts to show
+         </h2>
+       );
+     }
+     var posts_section = this.state.posts
+       .slice(0, this.state.requiredCount)
+       .map(
+         function (post) {
+           return <Post from={this.props.page} key={post.id} data={post} />;
+         }.bind(this)
+       );
+     var footer = null;
+     if (this.state.requiredCount > this.state.posts.length) {
+       if (this.state.next) {
+         footer = <div className="text-center">{Utils.spinner()}</div>;
+       } else {
+         footer = <h4 className="gray_text text-center">No more posts to show</h4>;
+       }
+     } else if (
+       this.state.requiredCount < this.state.posts.length ||
+         this.state.requiredCount === this.state.posts.length &&
+         this.state.next
+       ) {
+       footer = <a style={{"display":"block"}} href="#" onClick={this.clickedSeeMore}>
+         <div
+           style={{"padding":"5px"}}
+           className="bg-info text-center">
+           See More
+         </div>
+       </a>;
+     }
     return (
       <div>
-        {!this.state.posts.length ? <h2 className="gray_text text-center">No Posts to show</h2> : null}
-        {this.state.posts.map(function (post) {
-          return <Post from={this.props.page} key={post.id} data={post} />;
-        }.bind(this))}
+        {posts_section}
         <div style={{"height": "100px"}}>
-          {show_more_link
-            ? <a style={{"display":"block"}} href="#" onClick={this.clickedSeeMore}>
-                <div
-                  style={{"padding":"5px"}}
-                  className="bg-info text-center">
-                  See More
-                </div>
-              </a>
-            : (this.state.showEnd
-               ? <h4 className="gray_text text-center">Now more posts to show</h4>
-               : null
-              )
-          }
+          {footer}
         </div>
       </div>
     );
   },
 
   clickedSeeMore: function(event) {
-    if (!this.state.pagingLinks || !this.state.pagingLinks.next) {
-      return;
-    }
-    FB.api(this.state.pagingLinks.next, function(response) {
-      var posts = this.state.posts.concat(response.data);
-      var dead_end = !response.paging || !response.paging.next;
-      this.setState({
-        posts: posts,
-        pagingLinks: response.paging,
-        showEnd: dead_end,
-      });
-    }.bind(this));
+    this.setState({requiredCount: this.state.requiredCount + 10});
     event.preventDefault();
   },
 });

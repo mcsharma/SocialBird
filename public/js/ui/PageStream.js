@@ -5,8 +5,31 @@ var PageStream = React.createClass({
     };
   },
 
-  getPostFieldsToFetch: function() {
-    return 'message,created_time,link,type,full_picture,source';
+  statics: {
+    getPostFieldsToFetch: function() {
+      return [
+        'message',
+        'created_time',
+        'link',
+        'type',
+        'full_picture',
+        'source',
+      ];
+    }
+  },
+
+  getStreamQuery: function (since) {
+    var uri = new URI()
+      .segment(this.props.page.id)
+      .segment('posts')
+      .setQuery('limit', 10)
+      .setQuery('date_format', 'U')
+      .setQuery('fields', PageStream.getPostFieldsToFetch().join(','));
+
+    if (!isNaN(since)) {
+      uri.setQuery('since', since);
+    }
+    return uri.resource(); // returns (path + query string)
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -24,8 +47,7 @@ var PageStream = React.createClass({
   componentDidUpdate: function() {
     if (typeof (this.state.posts) === 'undefined') {
       FB.api(
-        this.props.page.id + '/posts?date_format=U' +
-          '&limit=10&fields=' + this.getPostFieldsToFetch(),
+        this.getStreamQuery(),
         function (response) {
           this.setState({
             posts: response.data,
@@ -41,9 +63,8 @@ var PageStream = React.createClass({
         ? this.state.posts[0].created_time
         : 0;
       FB.api(
-        this.props.page.id + '/posts?date_format=U&since=' + since +
-          '&limit=50&fields=' + this.getPostFieldsToFetch(),
-        function (response) {
+       this.getStreamQuery(since),
+       function (response) {
           this.setState({
             posts: response.data.concat(this.state.posts),
             // TODO: Might want to improve this count
